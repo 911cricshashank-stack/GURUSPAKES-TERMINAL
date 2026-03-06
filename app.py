@@ -3,7 +3,7 @@ import requests
 from bs4 import BeautifulSoup
 import yfinance as yf
 from email.utils import parsedate_to_datetime
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 import re
 
 # 1. PAGE SETUP
@@ -257,7 +257,9 @@ def get_ticker_prices():
     except: pass
     return prices_html
 
-current_time = datetime.now().strftime("%I:%M:%S %p IST | %b %d, %Y").upper()
+# Force the server to calculate exact Indian Standard Time (UTC + 5:30)
+ist_offset = timezone(timedelta(hours=5, minutes=30))
+current_time = datetime.now(ist_offset).strftime("%I:%M:%S %p IST | %b %d, %Y").upper()
 prices = get_ticker_prices()
 
 ticker_html = f"<div class='ticker-bar'><div>{prices}</div><div><span style='color: #00FF00;'>🟢 LIVE</span> &nbsp;&nbsp; {current_time}</div></div>"
